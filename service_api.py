@@ -991,13 +991,14 @@ class ServiceApi(object):
 
     @staticmethod
     def platform_execute(platform_device_id, command, cap_type):
+        app.logger.error("Platform Exec",command)     
         if cap_type == '1':
             agent_op = "execute_agent"
         elif cap_type == '3':
             agent_op = "execute_resource"
         params = {"command": {"type_": "AgentCommand", "command": command}}
-        if command == 'RESOURCE_AGENT_EVENT_GO_DIRECT_ACCESS':
-            params['command'].update({'kwargs': {'session_type': 3, 'session_timeout':600, 'inactivity_timeout': 600}})
+        if command == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT':
+            params['command'].update({'kwargs': {'port_num': 3}})
         agent_response = service_gateway_agent_request(platform_device_id, agent_op, params)
         return agent_response
 

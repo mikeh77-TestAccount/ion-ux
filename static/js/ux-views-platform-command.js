@@ -1,7 +1,7 @@
 IONUX.Views.PlatformCommandFacepage = Backbone.View.extend({
   el: "#dynamic-container",
   template: _.template($("#platform-command-facepage-tmpl").html()),
-  command_template: _.template($('#instrument-command-tmpl').html()),
+  command_template: _.template($('#platform-command-tmpl').html()),
   events: {
     'click #start': 'start_agent',
     'click #stop': 'stop_agent',
@@ -79,9 +79,12 @@ IONUX.Views.PlatformCommandFacepage = Backbone.View.extend({
     var cap_type = execute_elmt.data('cap-type');
     var command = execute_elmt.data('command');
     var url = command + '/?cap_type='+cap_type;
-    if (command == 'RESOURCE_AGENT_EVENT_GO_DIRECT_ACCESS') {
-      url += '&session_type='+this.$el.find('option:selected').val();
+    if (command == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT') {
+      url += '&port_number='+this.$el.find('option:selected').val();
     };
+
+      console.log("command url = :", url);
+  
     
     // Clear any form data to prevent submission.
     $('#resource-form2, #agent-form').empty();
@@ -133,6 +136,7 @@ IONUX.Views.PlatformCommandFacepage = Backbone.View.extend({
   },
   
   get_capabilities: function(evt) {
+      console.log('get_capabilities');
       // Change the button to indicate activity while fetching caps if we got here via a click.
       if (evt) {
           var but = $(evt.target);
@@ -191,6 +195,7 @@ IONUX.Views.PlatformCommandFacepage = Backbone.View.extend({
   },
   
   render_commands: function(options) {
+    console.log('render_commands');
     var cmd_tmpl = '<tr class="execute_command">\
                     <td style="width:90%;"><%= name %></td>\
                     <td style="text-align:right">\

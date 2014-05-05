@@ -27,7 +27,9 @@ app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.debug = True
 app.logger.setLevel(LOGGING_LEVEL)
-
+file_handler = RotatingFileHandler(LOGGING_FILE_NAME, maxBytes=1024 * 1024 * LOGGING_MAX_SIZE_MB, backupCount=5)
+file_handler.setLevel(LOGGING_LEVEL)
+app.logger.addHandler(file_handler)
 
 def get_versions():
     if not hasattr(g, "ion_ux_version"):
