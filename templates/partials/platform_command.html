@@ -1,16 +1,16 @@
 <tr class="execute_command">
   <td style="width:90%;"><%= name %>
   <td>
-    <% if (name == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT') { %>
+    <% if (name == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT' | name == 'RSN_PLATFORM_DRIVER_TURN_OFF_PORT') { %>
       <select id="Port Number">
-        <option value="1">J05-IP1</option>
-        <option value="2">J06-IP2</option>
-        <option value="3">J07-IP3</option>
-        <option value="4">J08-IP4</option>
-        <option value="5">J09-IP5</option>
-        <option value="6">J10-IP6</option>
-        <option value="7">J11-IP7</option>
-        <option value="8">J12-IP8</option>
+        <option value="J05-IP1">J05-IP1</option>
+        <option value="J06-IP2">J06-IP2</option>
+        <option value="J07-IP3">J07-IP3</option>
+        <option value="J08-IP4">J08-IP4</option>
+        <option value="J09-IP5">J09-IP5</option>
+        <option value="J10-IP6">J10-IP6</option>
+        <option value="J11-IP7">J11-IP7</option>
+        <option value="J12-IP8">J12-IP8</option>
       </select>
     <% } else { %>
       &nbsp;

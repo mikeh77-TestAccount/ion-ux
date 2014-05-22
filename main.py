@@ -465,9 +465,55 @@ def suspend_persistence():
 # COMMAND RESOURCE PAGES
 # -----------------------------------------------------------------------------
 
+
+@app.route('/PlatformDevice/command/<platform_device_id>/<agent_command>/<agent_instance_id>/')
+def platform_start_stop_command(platform_device_id, agent_command, cap_type=None, agent_instance_id=None):
+    app.logger.debug('platform_start_stop_command %s'%agent_command)
+    if agent_command == 'start':
+        command_response = ServiceApi.platform_agent_start(agent_instance_id)
+        return jsonify(data=command_response)
+    elif agent_command == 'stop':
+        command_response = ServiceApi.platform_agent_stop(agent_instance_id)
+        return jsonify(data=command_response)
+    elif agent_command == 'get_capabilities':
+        command_response = ServiceApi.platform_agent_get_capabilities(platform_device_id)
+        return jsonify(data=command_response)
+    
+    return jsonify(data=command_response)
+
+# @app.route('/PlatformDevice/command/<platform_device_id>/<agent_command>/')
+@app.route('/PlatformDevice/command/<platform_device_id>/<agent_command>/', methods=['GET', 'POST', 'PUT'])
+# @login_required
+def platform_command(platform_device_id, agent_command, cap_type=None, agent_instance_id=None):
+    app.logger.debug('platform_command %s'%agent_command)
+    cap_type = request.args.get('cap_type')
+    port_id="n/a"
+    if request.method in ('POST', 'PUT'):
+        if agent_command == 'set_agent':
+            resource_params = json.loads(request.data)
+            command_response = ServiceApi.set_agent(platform_device_id, resource_params)
+        elif agent_command == 'set_resource':
+            resource_params = json.loads(request.data)
+            command_response = ServiceApi.set_resource(platform_device_id, resource_params)
+        else:
+            if ( agent_command == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT' or agent_command == 'RSN_PLATFORM_DRIVER_TURN_OFF_PORT' ):
+                port_id = request.args.get('port_id')
+            command_response = ServiceApi.platform_execute(platform_device_id, agent_command, cap_type, port_id)
+    else:
+        if agent_command == 'get_capabilities':
+            command_response = ServiceApi.instrument_agent_get_capabilities(platform_device_id)
+        elif agent_command == 'get_resource':
+            command_response = ServiceApi.get_resource(platform_device_id)
+        elif agent_command == 'get_platform_agent_state':
+            command_response = ServiceApi.platform_agent_state(platform_device_id, 'get_agent_state')
+    return render_json_response(command_response)
+
+
+
 @app.route('/<device_type>/command/<instrument_device_id>/<agent_command>/', methods=['GET', 'POST', 'PUT'])
 # @login_required
 def instrument_command(device_type, instrument_device_id, agent_command, cap_type=None, session_type=None):
+    app.logger.debug('instrument_command %s'%agent_command)
     cap_type = request.args.get('cap_type')
     if request.method in ('POST', 'PUT'):
         if agent_command == 'set_agent':
@@ -508,23 +554,6 @@ def taskable_command(resource_id, command, cap_type=None, session_type=None):
             command_response = ServiceApi.tasktable_get_capabilities(resource_id)
     return render_json_response(command_response)
 
-# @app.route('/PlatformDevice/command/<platform_device_id>/<agent_command>/')
-@app.route('/PlatformDevice/command/<platform_device_id>/<agent_command>/<agent_instance_id>/')
-def start_platform_agent(platform_device_id, agent_command, cap_type=None, agent_instance_id=None):
-    cap_type = request.args.get('cap_type')
-    if agent_command == 'start':
-        command_response = ServiceApi.platform_agent_start(agent_instance_id)
-        return jsonify(data=command_response)
-    elif agent_command == 'stop':
-        command_response = ServiceApi.platform_agent_stop(agent_instance_id)
-        return jsonify(data=command_response)
-    elif agent_command == 'get_capabilities':
-        command_response = ServiceApi.platform_agent_get_capabilities(platform_device_id)
-        return jsonify(data=command_response)
-    else:
-        command_response = ServiceApi.platform_execute(platform_device_id, agent_command, cap_type)
-    
-    return jsonify(data=command_response)
 
 
 # -----------------------------------------------------------------------------

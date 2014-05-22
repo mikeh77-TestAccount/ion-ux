@@ -11,7 +11,8 @@ IONUX.Views.PlatformCommandFacepage = Backbone.View.extend({
   },
 
   initialize: function(){
-    _.bindAll(this, "render", "start_agent", "get_platform_state" );
+   _.bindAll(this);
+//  _.bindAll(this, "render", "start_agent", "get_platform_state" );
     this.model.bind("change", this.render);
     
     // console.log($('#start-instrument-agent-instance'));
@@ -79,8 +80,9 @@ IONUX.Views.PlatformCommandFacepage = Backbone.View.extend({
     var cap_type = execute_elmt.data('cap-type');
     var command = execute_elmt.data('command');
     var url = command + '/?cap_type='+cap_type;
-    if (command == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT') {
-      url += '&port_number='+this.$el.find('option:selected').val();
+    if (command == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT' || 
+		command == 'RSN_PLATFORM_DRIVER_TURN_OFF_PORT') {
+      url += '&port_id='+this.$el.find('option:selected').val();
     };
 
       console.log("command url = :", url);

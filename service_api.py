@@ -837,6 +837,7 @@ class ServiceApi(object):
         
     @staticmethod
     def instrument_execute(instrument_device_id, command, cap_type, session_type=None):
+        app.logger.error("instrument_execute %s" % command)     
         if cap_type == '1':
             agent_op = "execute_agent"
         elif cap_type in ('3','4'):
@@ -926,6 +927,7 @@ class ServiceApi(object):
 
     @staticmethod
     def taskable_execute(resource_id, command):
+        app.logger.error("taskable_execute %s" % command)     
         command_obj = {'type_': 'AgentCommand', 'command': command, 'args':[], 'kwargs':{}}
         taskable = service_gateway_post('resource_management', 'execute_resource', params={'resource_id':resource_id, 'command': command_obj})
         return taskable
@@ -990,15 +992,15 @@ class ServiceApi(object):
         return agent_request
 
     @staticmethod
-    def platform_execute(platform_device_id, command, cap_type):
-        app.logger.error("Platform Exec",command)     
+    def platform_execute(platform_device_id, command, cap_type,port_id=None):
+        app.logger.error("platform_execute %s" % command)     
         if cap_type == '1':
             agent_op = "execute_agent"
         elif cap_type == '3':
             agent_op = "execute_resource"
         params = {"command": {"type_": "AgentCommand", "command": command}}
-        if command == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT':
-            params['command'].update({'kwargs': {'port_num': 3}})
+        if ( command == 'RSN_PLATFORM_DRIVER_TURN_ON_PORT' or command == 'RSN_PLATFORM_DRIVER_TURN_OFF_PORT' ):
+            params['command'].update({'kwargs': {'port_id': port_id}})
         agent_response = service_gateway_agent_request(platform_device_id, agent_op, params)
         return agent_response
 
